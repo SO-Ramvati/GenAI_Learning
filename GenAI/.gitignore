@@ -13,4 +13,4 @@ __pycache__/
 #.DS_Store (for mac users)
 Thumbs.db
 
-!GenAI/Day_2/.venv/files/
+!GenAI_Learning/GenAI/Day_2/.venv/files/
