@@ -32,6 +32,30 @@ OLLAMA_MODEL = "phi3:mini"
 # Display the main page title in the Streamlit app.
 st.title(f"My Chatbot ({OLLAMA_MODEL})")
 
+with st.sidebar:
+    st.header("Bot Settings")
+    system_prompt = st.text_area(
+        "Persona / system prompt:",
+        value="You are a helpful and friendly assistant.",
+        height=120,
+    )
+    
+    # Rebuild the chain whenever the system prompt changes
+    if st.button("Apply & Reset Chat"):
+        for key in ["conversational_chain", "chat_history"]:
+            if key in st.session_state:
+                del st.session_state[key]
+        st.rerun()
+
+    # Clear chat without changing the persona
+    if st.button("Clear Chat"):
+        if "chat_history" in st.session_state:
+            del st.session_state["chat_history"]
+        st.rerun()
+    st.divider()
+    st.caption("Model: Phi3:mini (local Ollama)")
+
+
 # 1. Initialize conversational history backend in session state
 # Check this condition and run the indented block only when it is true.
 if "chat_history" not in st.session_state:
@@ -46,7 +70,7 @@ if "conversational_chain" not in st.session_state:
     
     # Create a prompt with a placeholder for conversational history.
     prompt = ChatPromptTemplate.from_messages([
-        ("system", "You are a helpful assistant."),
+        ("system", system_prompt),
         MessagesPlaceholder(variable_name="history"),
         ("human", "{input}"),
     ])
